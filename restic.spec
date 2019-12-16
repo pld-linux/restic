@@ -1,32 +1,21 @@
 Summary:	Fast, secure, efficient backup program
 Name:		restic
-Version:	0.8.1
-Release:	0.1
+Version:	0.9.6
+Release:	1
 License:	BSD
 Group:		Applications/System
 Source0:	https://github.com/restic/restic/releases/download/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	01eb26583c9a91be33697b2a4c917422
+# Source0-md5:	d62fb532ca7b4aaabcc9eed202a48ce4
 URL:		https://restic.net/
-%ifarch %{x8664} arm aarch64 ppc64
-BuildRequires:	criu-devel >= 1.7
-%endif
 BuildRequires:	golang >= 1.7
 BuildRequires:	pkgconfig
 BuildRequires:	rpmbuild(macros) >= 1.228
-Requires(post,preun):	/sbin/chkconfig
-Requires(postun):	/usr/sbin/groupdel
-Requires(pre):	/usr/bin/getgid
-Requires(pre):	/usr/sbin/groupadd
-Requires:	rc-scripts >= 0.4.0.10
-#Requires:	uname(release) >= 4.1
-Provides:	group(restic)
-ExclusiveArch:	%{ix86} %{x8664} %{arm}
+ExclusiveArch:	%{ix86} %{x8664}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_enable_debug_packages 0
 %define		gobuild(o:) go build -ldflags "${LDFLAGS:-} -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\n')" -a -v -x %{?**};
 %define		gopath		%{_libdir}/golang
-%define		import_path	github.com/lxc/lxd
 %define		_libexecdir	%{_prefix}/lib
 
 %description
@@ -39,7 +28,7 @@ backends.
 
 %build
 
-go run build.go
+go run -mod=vendor build.go
 mv README.rst README
 
 %install
