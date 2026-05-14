@@ -15,6 +15,8 @@ BuildRequires:	rpmbuild(macros) >= 1.228
 ExclusiveArch:	%go_arches
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
+%undefine	_debugsource_packages
+
 %description
 restic is a backup program which allows saving multiple revisions of
 files and directories in an encrypted repository stored on different
