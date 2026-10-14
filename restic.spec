@@ -1,17 +1,21 @@
 Summary:	Fast, secure, efficient backup program
 Name:		restic
-Version:	0.18.1
+Version:	0.19.1
 Release:	1
 License:	BSD
 Group:		Applications/System
 Source0:	https://github.com/restic/restic/releases/download/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	cf7ba497eb68cca53e75b263efea73aa
+# Source0-md5:	5081e2130959861a7731714c3bc41464
+# cd %{name}-%{version}
+# go mod vendor
+# tar cJf ../%{name}-vendor-%{version}.tar.xz vendor
 Source1:	%{name}-vendor-%{version}.tar.xz
-# Source1-md5:	49df8d14de99db7a2024da47e5f15714
+# Source1-md5:	837650e44f62df7cc1f97d72d8edf645
 URL:		https://restic.net/
-BuildRequires:	golang >= 1.7
-BuildRequires:	pkgconfig
-BuildRequires:	rpmbuild(macros) >= 1.228
+# go.mod toolchain directive; with GOTOOLCHAIN=auto an older go tries to download it
+BuildRequires:	golang >= 1.25.10
+BuildRequires:	rpmbuild(macros) >= 2.009
+BuildRequires:	xz
 ExclusiveArch:	%go_arches
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
