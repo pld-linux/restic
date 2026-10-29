@@ -1,19 +1,25 @@
+%define		vendor_ver	%{version}-2
+
 Summary:	Fast, secure, efficient backup program
 Name:		restic
 Version:	0.19.1
-Release:	1
+Release:	2
 License:	BSD
 Group:		Applications/System
 Source0:	https://github.com/restic/restic/releases/download/v%{version}/%{name}-%{version}.tar.gz
 # Source0-md5:	5081e2130959861a7731714c3bc41464
 # cd %{name}-%{version}
+# patch -p1 < %{name}-deps-security.patch
 # go mod vendor
-# tar cJf ../%{name}-vendor-%{version}.tar.xz vendor
-Source1:	%{name}-vendor-%{version}.tar.xz
-# Source1-md5:	837650e44f62df7cc1f97d72d8edf645
+# tar cJf ../%{name}-vendor-%{vendor_ver}.tar.xz vendor
+Source1:	%{name}-vendor-%{vendor_ver}.tar.xz
+# Source1-md5:	d52f92d325baada76997e9f4ad84e705
+# vendored modules bumped past their security fixes (x/net, x/crypto,
+# x/text, klauspost/compress, grpc, otel)
+Patch0:		%{name}-deps-security.patch
 URL:		https://restic.net/
-# go.mod toolchain directive; with GOTOOLCHAIN=auto an older go tries to download it
-BuildRequires:	golang >= 1.25.10
+# go.mod go directive; with GOTOOLCHAIN=auto an older go tries to download a toolchain
+BuildRequires:	golang >= 1.26.0
 BuildRequires:	rpmbuild(macros) >= 2.009
 BuildRequires:	xz
 ExclusiveArch:	%go_arches
@@ -28,6 +34,7 @@ backends.
 
 %prep
 %setup -q -a1
+%patch -P0 -p1
 
 %build
 %__go run -v -mod=vendor build.go
